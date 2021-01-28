@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 //인증 라이브러리
 
 //! SCHEMA: 데이터를 DB에 넣기 전에 먼저 검사
-
+const USER_TOKEN = "USER_TOKEN";
 const userSchema = mongoose.Schema({
     name: {
         type: String,
@@ -34,30 +34,34 @@ const userSchema = mongoose.Schema({
     },
     //관리자 혹은 유저인지 확인
     Image: String,
+
+    //토큰 발행과 토큰 유효기간
     token: {
         type: String,
     },
     tokenExp: {
         type: Number,
     },
-    //토큰 발행과 토큰 유효기간
 });
 
-//! 유저 비밀번호 암호화 with bycrypt
-//저장 전 pre
+//! 유저 비밀번호 암호화 with bycrypt -> 유저를 DB에 저장하기 전에 암호화 하기.
+
 userSchema.pre("save", function (next) {
     const user = this;
-    const myPlaintextPassword = user.password;
+    //this = userSchema;
+    const userPassword = user.password;
 
+    //password가 변화를 요청 할 때만 암호화 진행.
     if (user.isModified("password")) {
         //salt를 이용하여 비밀번호 암호화
         bcrypt.genSalt(saltRounds, function (err, salt) {
             if (err) next(err);
 
-            bcrypt.hash(myPlaintextPassword, salt, function (err, hash) {
+            bcrypt.hash(userPassword, salt, function (err, hash) {
                 // Store hash in your password DB.
                 if (err) return next(err);
                 user.password = hash;
+                //hash된 비밀번호를 DB에 등록.
                 next();
             });
         });
@@ -66,25 +70,35 @@ userSchema.pre("save", function (next) {
     }
 });
 
-userSchema.methods.comparePassword = function (plainPassword, cb) {
-    //plainPassword 1234 | 암호화 비밀번호 매칭
-    bcrypt.compare(plainPassword, this.password, function (err, isMatch) {
-        if (err) return cb(err), cb(null, isMatch);
+// Server.js 의 메서드 전달
+// 비밀번호 매칭 메서드
+userSchema.methods.comparePassword = function (inputPassword, cb) {
+    const dbPassword = this.password;
+    //inputPassword 1234 <=> 암호화 비밀번호 매칭
+    //! bycrypt의 compare메서드 이용.
+    bcrypt.compare(inputPassword, dbPassword, function (err, isMatch) {
+        if (err) return cb(err);
+        return cb(null, isMatch);
+        //isMatch = true, err는 발생 하지 않음.
     });
 };
 
-userSchema.methods.generateToken = function (cb) {
-    //JSON WEBTOKEN을 이용하여 토큰 생성
+// 로그인 유저를 위한 jwt 토큰 발행
+userSchema.methods.generateValidUserToken = function (cb) {
+    //JWT를 이용하여 토큰 생성
     let user = this;
+    //function 과 화살표 함수의 this차이가 있음!
 
-    let token = jwt.sign(user._id, "TOKEN_GENERATE");
+    const token = jwt.sign({ userId: user._id }, USER_TOKEN);
 
     user.token = token;
+    //token db에 저장. => token을 통해 user을 알아낼 수 있음.
+
+    //몽고 db메서드 save()
     user.save(function (err, user) {
         if (err) return cb(err);
         cb(null, user);
     });
-    // user._id + 'TOKEN_GENERATE' = token;
 };
 
 const User = mongoose.model("User", userSchema);
