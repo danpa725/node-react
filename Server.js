@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 
 const config = require("./config/key");
 const { User } = require("./models/User");
-
+const { authUser } = require("./middleware/auth");
 //application/x-www-form-urlencoded 형태 데이터 가져옴
 app.use(bodyParser.urlencoded({ extended: true }));
 //json 형태 데이터 가져옴
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 
 //user 등록--------------------------------------------------------------------------------------------------
 
-app.post("/user/register", (req, res) => {
+app.post("api/users/register", (req, res) => {
     //회원가입 필요 정보 client에서 가져오면 데이터 베이스에 대입
     //req.body에 JSON 형태로 데이터가 들어있음
     const user = new User(req.body);
@@ -57,7 +57,7 @@ app.post("/user/register", (req, res) => {
 
 //user 로그인--------------------------------------------------------------------------------------------------
 
-app.post("/user/login", (req, res) => {
+app.post("api/users/login", (req, res) => {
     const { email, password } = req.body;
     //1. 요청된 이메일을 데이터 베이스에 있는지 찾는다.
 
@@ -95,6 +95,26 @@ app.post("/user/login", (req, res) => {
                 });
             });
         }
+    });
+});
+
+//Auth 이용하기 로그인 사용자의 쿠키 속 jwt를 통해 user.id를 구함 -> 서버와 비교하여 특정 페이지를 진입 가능한지 설정-------
+
+app.get("api/users/auth", authUser, (req, res) => {
+    //! authuser 는 콜백을 실행하기전에 시행하는 미들웨어...
+    // authUser가 문제없이 통과 -> 인증이 정상적으로 진행됨.
+    const { id, role, email, name, lastname, role, image } = req.user;
+
+    res.status(200).json({
+        _id: id,
+        isAdmin: role === 0 ? false : true,
+        //! 1이면 관리자.
+        isAuth: true,
+        email,
+        name,
+        lastname,
+        role,
+        image,
     });
 });
 

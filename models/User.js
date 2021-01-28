@@ -101,6 +101,24 @@ userSchema.methods.generateValidUserToken = function (cb) {
     });
 };
 
+userSchema.methods.findByToken = function (token, cb) {
+    let user = this;
+    // 토큰 가져온 후 decode.
+    jwt.verify(token, USER_TOKEN, function (err, decodedUserId) {
+        //유저 아이디로 유저 찾기
+        //클라이언트 토큰 데이터 베이스 토큰과 비교.
+
+        user.findOne({
+            _id: decodedUserId,
+            token: token,
+            function(err, user) {
+                if (err) return cb(err);
+                cb(null, user);
+            },
+        });
+    });
+};
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = { User };
