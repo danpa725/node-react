@@ -103,7 +103,7 @@ app.post("api/users/login", (req, res) => {
 app.get("api/users/auth", authUser, (req, res) => {
     //! authuser 는 콜백을 실행하기전에 시행하는 미들웨어...
     // authUser가 문제없이 통과 -> 인증이 정상적으로 진행됨.
-    const { id, role, email, name, lastname, role, image } = req.user;
+    const { id, email, name, lastname, role, image } = req.user;
 
     res.status(200).json({
         _id: id,
