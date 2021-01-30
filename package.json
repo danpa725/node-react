@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon ./server/Server.js --watch"
+    "server": "nodemon ./server/Server.js --watch",
+    "client": ""
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
