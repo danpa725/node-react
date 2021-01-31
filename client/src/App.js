@@ -1,14 +1,14 @@
 import { Route } from "react-router-dom";
 
-import LandingPage from "./routes/LandingPage";
-import LoginPage from "./routes/LoginPage";
-import Register from "./routes/Register";
+import Home from "./routes/HomePage";
+import Login from "./routes/LoginPage";
+import Register from "./routes/RegisterPage";
 
 function App() {
     return (
         <>
-            <Route exact={true} path="/" component={LandingPage} />
-            <Route exact={true} path="/login" component={LoginPage} />
+            <Route exact={true} path="/" component={Home} />
+            <Route exact={true} path="/login" component={Login} />
             <Route exact={true} path="/register" component={Register} />
         </>
     );

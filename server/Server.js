@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const port = 5000;
 //mongoose 연결
 const mongoose = require("mongoose");
 //body-parser 연결
@@ -33,12 +32,16 @@ mongoose
 //--------------------------------------------------------------------------------------------------
 
 app.get("/", (req, res) => {
-    res.send("Open Server!!");
+    res.send("Open Server!");
+});
+
+app.get("/api/hellow", (req, res) => {
+    res.send("Hellow users!");
 });
 
 //user 등록--------------------------------------------------------------------------------------------------
 
-app.post("/register", (req, res) => {
+app.post("/api/users/register", (req, res) => {
     //회원가입 필요 정보 client에서 가져오면 데이터 베이스에 대입
     //req.body에 JSON 형태로 데이터가 들어있음
     const user = new User(req.body);
@@ -56,7 +59,7 @@ app.post("/register", (req, res) => {
 
 //user 로그인--------------------------------------------------------------------------------------------------
 
-app.post("/login", (req, res) => {
+app.post("/api/users/login", (req, res) => {
     const { email, password } = req.body;
     //1. 요청된 이메일을 데이터 베이스에 있는지 찾는다.
 
@@ -99,7 +102,7 @@ app.post("/login", (req, res) => {
 
 //Auth 이용하기 로그인 사용자의 쿠키 속 jwt를 통해 user.id를 구함 -> 서버와 비교하여 특정 페이지를 진입 가능한지 설정-------
 
-app.get("/auth", authUser, (req, res) => {
+app.get("/api/users/auth", authUser, (req, res) => {
     //! authuser 는 콜백을 실행하기전에 시행하는 미들웨어...
     // authUser가 문제없이 통과 -> 인증이 정상적으로 진행됨.
     const { id, email, name, lastname, role, image } = req.user;
@@ -119,7 +122,7 @@ app.get("/auth", authUser, (req, res) => {
 
 //쿠키 속 토큰을 통해 인증을 진행하기에 DB에 user 토큰만 지우면 로그아웃 상태로 복귀함.-----------------------
 
-app.get("/logout", authUser, (req, res) => {
+app.get("/api/users/logout", authUser, (req, res) => {
     User.findOneAndUpdate(
         {
             _id: req.user._id,
@@ -137,8 +140,10 @@ app.get("/logout", authUser, (req, res) => {
     );
 });
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+const PORT = 5000;
+
+app.listen(PORT, () => {
+    console.log(`Example app listening at http://localhost:${PORT}`);
 });
 
 //--------------------------------------------------------------------------------------------------
