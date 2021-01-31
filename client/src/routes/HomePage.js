@@ -1,15 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function LandingPage() {
+    const [user, setUser] = useState("");
+
     const getDataFromServer = async () => {
-        const data = await axios.get("/api/hellow");
-        console.log(data);
+        const { data } = await axios.get("/api/hellow");
+        setUser(data);
+        console.log(user);
     };
+
     useEffect(() => {
         getDataFromServer();
-    }, []);
+    });
 
     return (
         <ul>

@@ -7,6 +7,7 @@
 - user login/logout with web token & bcrypt
 ## 2. frontend
 - react.js
+- redux | redux-middleware
 - styled components (-)
 - tailwind css (-)
   
