@@ -3,20 +3,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 import { ReactComponent as Logo } from "../assets/icons/mainLogo.svg";
-
-const Container = styled.div`
-    width: 100%;
-    height: 100vh;
-    padding-bottom: 5rem;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    font-family: "Work Sans", sans-serif;
-    color: #0d0d0d;
-    /* background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); */
-`;
+import Container from "../utils/Container";
+import { BTN_STYLE } from "../utils/ClassName";
+import MainLogo from "../utils/MainLogo";
 
 const Header = styled.header`
     position: sticky;
@@ -36,14 +25,6 @@ const Header = styled.header`
     -webkit-backdrop-filter: blur(10px);
 
     z-index: 10;
-`;
-
-const MainLogo = styled.h1`
-    font-size: 2.5rem;
-    font-family: "Abel", sans-serif;
-    flex: 5;
-
-    margin-left: 0.5rem;
 `;
 
 const Button = styled.button`
@@ -100,6 +81,7 @@ const ListBox = styled.li`
 `;
 
 const BOX_STYLE = "rounded-xl shadow-xl";
+// const BTN_STYLE = "focus:ring-2 focus:ring-opacity-50";
 
 export default function LandingPage() {
     const [user, setUser] = useState("");
@@ -117,22 +99,16 @@ export default function LandingPage() {
     return (
         <Container>
             <Header>
-                <MainLogo>Note Share</MainLogo>
+                <MainLogo isMainPage={true}>Note Share</MainLogo>
                 <Link to="/login">
-                    <Button
-                        className={
-                            "focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50  "
-                        }
-                    >
+                    <Button className={`${BTN_STYLE} focus:ring-gray-400 `}>
                         login
                     </Button>
                 </Link>
                 <Link to="/register">
                     <Button
                         isSign={true}
-                        className={
-                            "focus:ring-2 focus:ring-red-500 focus:ring-opacity-50  "
-                        }
+                        className={`${BTN_STYLE} focus:ring-red-500`}
                     >
                         sign in
                     </Button>
