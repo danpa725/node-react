@@ -66,7 +66,7 @@ app.post("/api/users/login", (req, res) => {
     User.findOne({ email }, (err, user) => {
         if (!user) {
             return res.json({
-                loginSucess: false,
+                loginSuccess: false,
                 message: "입력하신 이메일에 해당되는 계정이 존재하지 않습니다.",
                 err,
             });
@@ -78,7 +78,7 @@ app.post("/api/users/login", (req, res) => {
                 //틀림.
                 if (!isMatch)
                     return res.json({
-                        loginSucess: false,
+                        loginSuccess: false,
                         message: "비밀번호가 옳지 않습니다.",
                         err,
                     });
@@ -93,7 +93,7 @@ app.post("/api/users/login", (req, res) => {
 
                     res.cookie("x_auth", user.token)
                         .status(200)
-                        .json({ loginSucess: true, userId: user._id });
+                        .json({ loginSuccess: true, userId: user._id });
                 });
             });
         }

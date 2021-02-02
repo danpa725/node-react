@@ -9,7 +9,7 @@ const Container = styled.div`
     align-items: center;
     justify-content: ${(props) => props.isLoginPage && "center"};
 
-    font-family: "Work Sans", sans-serif;
+    font-family: "Work Sans", sans-serif, "Nanum Gothic Coding", monospace;
     color: #0d0d0d;
 `;
 

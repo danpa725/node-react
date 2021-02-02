@@ -17,7 +17,14 @@ const createStoreWithMiddleware = applyMiddleware(
 
 ReactDOM.render(
     <Router>
-        <Provider store={createStoreWithMiddleware(Reducer)}>
+        <Provider
+            store={createStoreWithMiddleware(
+                Reducer,
+                window.__REDUX_DEVTOOLS_EXTENSION__ &&
+                    window.__REDUX_DEVTOOLS_EXTENSION__()
+                //!  리덕스 개발자 도구 사용을 위함.
+            )}
+        >
             <App />
         </Provider>
     </Router>,

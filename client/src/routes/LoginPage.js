@@ -1,14 +1,21 @@
 import styled, { css } from "styled-components";
 
-import { BTN_STYLE } from "../utils/ClassName";
+import {
+    BTN_STYLE,
+    ERR_TEXT_STYLE,
+    INPUT_STYLE,
+    ERR_INPUT_STYLE,
+} from "../utils/ClassName";
+
 import Container from "../utils/Container";
 import MainLogo from "../utils/MainLogo";
 //------------------------------------------------------------------
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 //------------------------------------------------------------------
 import { useDispatch } from "react-redux";
 import { loginUser } from "../_action/user_action";
+import { useState } from "react";
 //------------------------------------------------------------------
 
 const Form = styled.form`
@@ -56,27 +63,41 @@ const Input = styled.input`
         `}
 `;
 
-const INPUT_STYLE = "focus:ring-green-600 ";
+const Err = styled.p`
+    font-family: "Nanum Gothic Coding", monospace;
+    font-weight: 700;
+    font-size: 0.9em;
+
+    width: 250px;
+    text-align: center;
+`;
+
+const EMAIL_ERR = "입력하신 이메일에 해당되는 계정이 존재하지 않습니다.";
+const PASSWORD_ERR = "비밀번호가 옳지 않습니다.";
 //------------------------------------------------------------------
 
-export default function LoginPage() {
+export default function LoginPage(url) {
     const dispatch = useDispatch();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [validation, setValidation] = useState();
+    const [err, setErr] = useState("");
     const { register, handleSubmit, errors } = useForm();
 
-    const sendUserInfo = (email, password) => {
-        const clientInfo = { email, password };
-        console.log(clientInfo);
-        dispatch(loginUser(clientInfo));
-    };
+    const onSubmit = (input) => {
+        const { email, password } = input;
 
-    const onSubmit = async (input) => {
-        const { email, password } = await input;
-        setEmail(email);
-        setPassword(password);
-        sendUserInfo(email, password);
+        const clientInfo = { email, password };
+
+        dispatch(loginUser(clientInfo)).then((res) => {
+            if (res.payload.loginSuccess) {
+                setValidation(true);
+                url.history.push("/");
+            } else if (!res.payload.loginSuccess) {
+                const { message } = res.payload;
+                setErr(message);
+                setValidation(false);
+            }
+        });
     };
 
     return (
@@ -89,7 +110,9 @@ export default function LoginPage() {
                     type="email"
                     placeholder="email"
                     ref={register({ required: true })}
-                    className={`${BTN_STYLE} ${INPUT_STYLE}`}
+                    className={`${BTN_STYLE} ${
+                        err === EMAIL_ERR ? ERR_INPUT_STYLE : INPUT_STYLE
+                    }`}
                 />
                 <Input
                     name="password"
@@ -97,15 +120,19 @@ export default function LoginPage() {
                     placeholder="password"
                     ref={register({ required: true, maxLength: 15 })}
                     className={`${BTN_STYLE} ${
-                        errors.password ? "focus:ring-red-700" : INPUT_STYLE
+                        errors.password || err === PASSWORD_ERR
+                            ? ERR_INPUT_STYLE
+                            : INPUT_STYLE
                     }`}
                 />
-                {/* errors.password state에 따른 조건부 렌더링. */}
+
+                {/* errors.password state에 따른 조건부 렌더링. 비밀번호 미입력시 발동 */}
                 {errors.password && (
-                    <p className={"text-opacity-90 text-red-500"}>
-                        password is required
-                    </p>
+                    <Err className={ERR_TEXT_STYLE}>password is required</Err>
                 )}
+
+                {/* 이메일 비밀번호 불일치시 메시지 출력 */}
+                {!validation && <Err className={ERR_TEXT_STYLE}>{err}</Err>}
 
                 <Input
                     isBtn={true}
