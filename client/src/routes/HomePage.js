@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import { ReactComponent as Logo } from "../assets/icons/mainLogo.svg";
 import Container from "../utils/Container";
 import { BTN_STYLE } from "../utils/ClassName";
 import MainLogo from "../utils/MainLogo";
@@ -80,7 +79,7 @@ const ListBox = styled.li`
     border: 0.5px solid rgba(255, 255, 255, 0.5);
 `;
 
-const BOX_STYLE = "rounded-xl shadow-xl";
+// const BOX_STYLE = "rounded-xl shadow-xl";
 // const BTN_STYLE = "focus:ring-2 focus:ring-opacity-50";
 
 export default function LandingPage() {
@@ -114,7 +113,6 @@ export default function LandingPage() {
                     </Button>
                 </Link>
             </Header>
-            {/* <Logo width={50} height={50} /> */}
             {/* <ListContainer>
                 <ListBox className={`${BOX_STYLE}`}>hellow</ListBox>
                 <ListBox className={`${BOX_STYLE}`}>hi</ListBox>

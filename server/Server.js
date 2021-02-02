@@ -48,10 +48,15 @@ app.post("/api/users/register", (req, res) => {
 
     //db에 저장 save()메서드
     user.save((err, userInfo) => {
-        if (err) return res.json({ success: false, err });
+        if (err)
+            return res.json({
+                registerSuccess: false,
+                message: "이메일과 비밀번호를 다시 확인해주세요.",
+                err,
+            });
         // 저장 성공시 200 신호 받음
         return res.status(200).json({
-            success: true,
+            registerSuccess: true,
             // userInfo,
         });
     });

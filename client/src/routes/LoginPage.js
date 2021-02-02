@@ -10,23 +10,13 @@ import {
 import Container from "../utils/Container";
 import MainLogo from "../utils/MainLogo";
 //------------------------------------------------------------------
-// import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 //------------------------------------------------------------------
 import { useDispatch } from "react-redux";
 import { loginUser } from "../_action/user_action";
 import { useState } from "react";
+import Form from "../utils/Form";
 //------------------------------------------------------------------
-
-const Form = styled.form`
-    height: 25rem;
-    width: 20rem;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-`;
 
 const Input = styled.input`
     transition: all ease-out 0.1s;
@@ -34,7 +24,7 @@ const Input = styled.input`
     width: 250px;
     height: 1.5rem;
 
-    margin: 0.5rem;
+    margin: 0.75rem;
 
     background: transparent;
 
@@ -74,6 +64,7 @@ const Err = styled.p`
 
 const EMAIL_ERR = "입력하신 이메일에 해당되는 계정이 존재하지 않습니다.";
 const PASSWORD_ERR = "비밀번호가 옳지 않습니다.";
+
 //------------------------------------------------------------------
 
 export default function LoginPage(url) {
@@ -90,8 +81,8 @@ export default function LoginPage(url) {
 
         dispatch(loginUser(clientInfo)).then((res) => {
             if (res.payload.loginSuccess) {
-                setValidation(true);
                 url.history.push("/");
+                //! react-router-dom에서 제공하는 url 기록임. -> push메서드로 메인 페이지로 이동.
             } else if (!res.payload.loginSuccess) {
                 const { message } = res.payload;
                 setErr(message);
@@ -102,7 +93,7 @@ export default function LoginPage(url) {
 
     return (
         <Container isLoginPage={true}>
-            <Form onSubmit={handleSubmit(onSubmit)} className={"shadow-md"}>
+            <Form onSubmit={handleSubmit(onSubmit)} className={"shadow-xl"}>
                 <MainLogo className={"mb-7"}>⨀ Note Share</MainLogo>
 
                 <Input
