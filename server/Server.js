@@ -98,7 +98,7 @@ app.post("/api/users/login", (req, res) => {
 
                     res.cookie("x_auth", user.token)
                         .status(200)
-                        .json({ loginSuccess: true, userId: user._id });
+                        .json({ loginSuccess: true, userId: user._id, user });
                 });
             });
         }
@@ -136,10 +136,10 @@ app.get("/api/users/logout", authUser, (req, res) => {
             token: "",
         },
         (err, user) => {
-            if (err) return res.json({ success: false, err });
+            if (err) return res.json({ logoutSuccess: false, err });
 
             return res.status(200).send({
-                success: true,
+                logoutSuccess: true,
             });
         }
     );

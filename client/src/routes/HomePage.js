@@ -5,6 +5,8 @@ import styled from "styled-components";
 import Container from "../utils/Container";
 import { BTN_STYLE } from "../utils/ClassName";
 import MainLogo from "../utils/MainLogo";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../_action/user_action";
 
 const Header = styled.header`
     position: sticky;
@@ -82,28 +84,42 @@ const ListBox = styled.li`
 // const BOX_STYLE = "rounded-xl shadow-xl";
 // const BTN_STYLE = "focus:ring-2 focus:ring-opacity-50";
 
-export default function LandingPage() {
+export default function LandingPage(url) {
+    const dispatch = useDispatch();
     const [user, setUser] = useState("");
 
-    const getDataFromServer = async () => {
-        const { data } = await axios.get("/api/hellow");
-        setUser(data);
-        console.log(user);
-    };
+    const { loginSuccess } = useSelector((state) => ({
+        loginSuccess: state.userReducer.loginSuccess,
+        logoutSuccess: state.userReducer.logoutSuccess,
+    }));
 
-    useEffect(() => {
-        getDataFromServer();
-    });
+    const handleLogOut = () => {
+        dispatch(logoutUser);
+    };
 
     return (
         <Container>
             <Header>
                 <MainLogo isMainPage={true}>Note Share</MainLogo>
-                <Link to="/login">
-                    <Button className={`${BTN_STYLE} focus:ring-gray-400 `}>
-                        login
-                    </Button>
-                </Link>
+
+                {loginSuccess && (
+                    <Link to="/login">
+                        <Button
+                            className={`${BTN_STYLE} focus:ring-gray-400 `}
+                            onClick={handleLogOut}
+                        >
+                            logout
+                        </Button>
+                    </Link>
+                )}
+                {!loginSuccess && (
+                    <Link to="/login">
+                        <Button className={`${BTN_STYLE} focus:ring-gray-400 `}>
+                            login
+                        </Button>
+                    </Link>
+                )}
+
                 <Link to="/register">
                     <Button
                         isSign={true}
