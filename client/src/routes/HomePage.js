@@ -81,53 +81,102 @@ const ListBox = styled.li`
     border: 0.5px solid rgba(255, 255, 255, 0.5);
 `;
 
-// const BOX_STYLE = "rounded-xl shadow-xl";
+const Profile = styled.div`
+    transition: all ease-out 0.1s;
+
+    width: auto;
+    height: 50px;
+
+    padding: 0 1rem;
+    margin-right: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: whitesmoke;
+
+    &:hover {
+        color: white;
+        font-weight: 500;
+
+        background: black;
+        border: gray 1px solid;
+    }
+`;
+
+const BOX_STYLE = "rounded-full shadow-sm border hover:shadow-md";
 // const BTN_STYLE = "focus:ring-2 focus:ring-opacity-50";
 
 export default function LandingPage(url) {
     const dispatch = useDispatch();
-    const [user, setUser] = useState("");
+    const [nickName, setNickName] = useState("");
 
     const { loginSuccess } = useSelector((state) => ({
         loginSuccess: state.userReducer.loginSuccess,
-        logoutSuccess: state.userReducer.logoutSuccess,
     }));
 
     const handleLogOut = () => {
         dispatch(logoutUser);
+        window.location.reload();
     };
+
+    useEffect(() => {
+        const getUserName = (isLogIn) => {
+            if (isLogIn) {
+                const { name } = loginSuccess.user;
+                return name;
+            }
+        };
+        const name = getUserName(loginSuccess);
+        if (name === undefined) {
+            setNickName("😎");
+        } else {
+            setNickName(name);
+        }
+    }, [loginSuccess]);
 
     return (
         <Container>
             <Header>
-                <MainLogo isMainPage={true}>Note Share</MainLogo>
+                <MainLogo isMainPage={true}>
+                    <Link to="/">Note Share</Link>
+                </MainLogo>
 
                 {loginSuccess && (
-                    <Link to="/login">
-                        <Button
-                            className={`${BTN_STYLE} focus:ring-gray-400 `}
-                            onClick={handleLogOut}
-                        >
-                            logout
-                        </Button>
-                    </Link>
+                    <>
+                        <Link to="/">
+                            <Button
+                                className={`${BTN_STYLE} focus:ring-gray-400 `}
+                                onClick={handleLogOut}
+                            >
+                                logout
+                            </Button>
+                        </Link>
+                        <Link to="/profile">
+                            <Profile className={BOX_STYLE}>{nickName}</Profile>
+                        </Link>
+                    </>
                 )}
                 {!loginSuccess && (
-                    <Link to="/login">
-                        <Button className={`${BTN_STYLE} focus:ring-gray-400 `}>
-                            login
-                        </Button>
-                    </Link>
+                    <>
+                        <Link to="/login">
+                            <Button
+                                className={`${BTN_STYLE} focus:ring-gray-400 `}
+                            >
+                                login
+                            </Button>
+                        </Link>
+                        <Link to="/register">
+                            <Button
+                                isSign={true}
+                                className={`${BTN_STYLE} focus:ring-red-500`}
+                            >
+                                sign in
+                            </Button>
+                        </Link>
+                    </>
                 )}
-
-                <Link to="/register">
-                    <Button
-                        isSign={true}
-                        className={`${BTN_STYLE} focus:ring-red-500`}
-                    >
-                        sign in
-                    </Button>
-                </Link>
             </Header>
             {/* <ListContainer>
                 <ListBox className={`${BOX_STYLE}`}>hellow</ListBox>
