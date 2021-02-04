@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { loginUser, registerUser } from "../_action/user_action";
 import { useState } from "react";
+import { withRouter } from "react-router-dom";
 //------------------------------------------------------------------
 
 const Input = styled.input`
@@ -64,7 +65,7 @@ const Err = styled.p`
 
 //------------------------------------------------------------------
 
-export default function LoginPage(url) {
+function RegisterPage(url) {
     const dispatch = useDispatch();
 
     const [validation, setValidation] = useState();
@@ -172,3 +173,4 @@ export default function LoginPage(url) {
         </Container>
     );
 }
+export default withRouter(RegisterPage);

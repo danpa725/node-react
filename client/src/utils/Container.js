@@ -15,7 +15,7 @@ const Container = styled.div`
         props.isLoginPage &&
         css`
             justify-content: center;
-            background-image: linear-gradient(-20deg, #e9defa 0%, #fbfcdb 100%);
+            background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
         `}
 
     ${(props) =>

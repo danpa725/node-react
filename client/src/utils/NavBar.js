@@ -14,7 +14,7 @@ const NavContainer = styled.div`
     justify-content: center;
     flex-direction: column;
 
-    background: whitesmoke;
+    background-image: linear-gradient(160deg, #fdfbfb 0%, #ebedee 100%);
 
     display: none;
 
@@ -31,11 +31,14 @@ const NavBtn = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
+
     width: inherit;
     height: 3rem;
+
     padding: 0.25rem 1rem;
     margin-right: 0.5rem;
 
+    background: transparent;
     &:active,
     &:focus {
         outline: none;

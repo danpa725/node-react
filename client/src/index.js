@@ -1,4 +1,3 @@
-import { HashRouter as Router } from "react-router-dom";
 import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
@@ -16,17 +15,15 @@ const createStoreWithMiddleware = applyMiddleware(
 )(createStore);
 
 ReactDOM.render(
-    <Router>
-        <Provider
-            store={createStoreWithMiddleware(
-                Reducer,
-                window.__REDUX_DEVTOOLS_EXTENSION__ &&
-                    window.__REDUX_DEVTOOLS_EXTENSION__()
-                //!  리덕스 개발자 도구 사용을 위함.
-            )}
-        >
-            <App />
-        </Provider>
-    </Router>,
+    <Provider
+        store={createStoreWithMiddleware(
+            Reducer,
+            window.__REDUX_DEVTOOLS_EXTENSION__ &&
+                window.__REDUX_DEVTOOLS_EXTENSION__()
+            //!  리덕스 개발자 도구 사용을 위함.
+        )}
+    >
+        <App />
+    </Provider>,
     document.getElementById("render")
 );

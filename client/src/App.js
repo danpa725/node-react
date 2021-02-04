@@ -1,4 +1,6 @@
-import { Route } from "react-router-dom";
+import { HashRouter as Router, Route } from "react-router-dom";
+
+import Auth from "./higerOrderComponents/Auth";
 
 import Home from "./routes/HomePage";
 import Login from "./routes/LoginPage";
@@ -6,11 +8,11 @@ import Register from "./routes/RegisterPage";
 
 function App() {
     return (
-        <>
-            <Route exact={true} path="/" component={Home} />
-            <Route exact={true} path="/login" component={Login} />
-            <Route exact={true} path="/register" component={Register} />
-        </>
+        <Router>
+            <Route exact path="/" component={Auth(Home, true)} />
+            <Route exact path="/login" component={Auth(Login, false)} />
+            <Route exact path="/register" component={Auth(Register, false)} />
+        </Router>
     );
 }
 

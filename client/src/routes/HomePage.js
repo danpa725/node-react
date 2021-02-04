@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 //-------------------------------------------------------------
-import { Link } from "react-router-dom";
-//-------------------------------------------------------------
 import styled from "styled-components";
 //-------------------------------------------------------------
-import Container from "../utils/Container";
+import { Link, withRouter } from "react-router-dom";
+//-------------------------------------------------------------
 import { BTN_STYLE } from "../utils/ClassName";
+//-------------------------------------------------------------
+import Container from "../utils/Container";
 import MainLogo from "../utils/MainLogo";
+import NavBar from "../utils/NavBar";
 //-------------------------------------------------------------
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../_action/user_action";
-import NavBar from "../utils/NavBar";
 //-------------------------------------------------------------
 
 const Header = styled.header`
@@ -60,7 +61,7 @@ const Button = styled.button`
 `;
 
 const ProfileBtn = styled.button`
-    transition: all ease-out 0.15s;
+    transition: 0.1s ease-out all;
 
     font-weight: 500;
 
@@ -74,10 +75,10 @@ const ProfileBtn = styled.button`
     align-items: center;
     justify-content: center;
 
-    background: whitesmoke;
-
+    background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
+    color: white;
     &:hover {
-        border: gray 1.5px solid;
+        border: 1px solid white;
     }
 
     &:active,
@@ -87,50 +88,20 @@ const ProfileBtn = styled.button`
     }
 `;
 
-const ListContainer = styled.ul`
-    width: 90%;
-
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, auto));
-    gap: 2.5rem;
-
-    margin-top: 1.5rem;
-    margin-bottom: 1.5rem;
-
-    align-items: center;
-    justify-items: center;
-
-    z-index: 1;
-`;
-
-const ListBox = styled.li`
-    width: 20rem;
-    height: 20rem;
-
-    color: #262626;
-    font-size: 1rem;
-
-    background: #262626;
-
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
-`;
-
-const BOX_STYLE = "rounded-full shadow-sm border hover:shadow-md";
-// const BTN_STYLE = "focus:ring-2 focus:ring-opacity-50";
-
+const PROFILE_STYLE = "rounded-full shadow-sm border hover:shadow-lg";
 //-------------------------------------------------------------
 
-export default function LandingPage() {
+function LandingPage() {
     const dispatch = useDispatch();
     const [nickName, setNickName] = useState("");
     const [display, setDisplay] = useState(false);
+    const [login, setLogin] = useState(false);
 
     const onClick = (arg) => {
         setDisplay(!arg);
     };
-
-    const { loginSuccess } = useSelector((state) => ({
-        loginSuccess: state.userReducer.loginSuccess,
+    const { userData = false } = useSelector((state) => ({
+        userData: state.userReducer.userData,
     }));
 
     const handleLogOut = () => {
@@ -140,19 +111,20 @@ export default function LandingPage() {
     };
 
     useEffect(() => {
+        setLogin(userData.isAuth);
         const getUserName = (isLogIn) => {
             if (isLogIn) {
-                const { name } = loginSuccess.user;
+                const { name } = userData;
                 return name;
             }
         };
-        const name = getUserName(loginSuccess);
+        const name = getUserName(userData.isAuth);
         if (name === undefined) {
             setNickName("😎");
         } else {
             setNickName(name);
         }
-    }, [loginSuccess]);
+    }, [userData]);
 
     return (
         <Container>
@@ -161,10 +133,10 @@ export default function LandingPage() {
                     <Link to="/">Note Share</Link>
                 </MainLogo>
 
-                {loginSuccess && (
+                {login && (
                     <>
                         <ProfileBtn
-                            className={BOX_STYLE}
+                            className={PROFILE_STYLE}
                             onClick={() => onClick(display)}
                         >
                             {nickName}
@@ -172,7 +144,7 @@ export default function LandingPage() {
                         <NavBar display={display} handleLogOut={handleLogOut} />
                     </>
                 )}
-                {!loginSuccess && (
+                {!login && (
                     <>
                         <Link to="/login">
                             <Button
@@ -192,12 +164,8 @@ export default function LandingPage() {
                     </>
                 )}
             </Header>
-            {/* <ListContainer>
-                <ListBox className={`${BOX_STYLE}`}>hellow</ListBox>
-                <ListBox className={`${BOX_STYLE}`}>hi</ListBox>
-                <ListBox className={`${BOX_STYLE}`}>bye</ListBox>
-                <ListBox className={`${BOX_STYLE}`}>june</ListBox>
-            </ListContainer> */}
         </Container>
     );
 }
+
+export default withRouter(LandingPage);

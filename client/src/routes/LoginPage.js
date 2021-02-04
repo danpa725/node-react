@@ -1,21 +1,22 @@
 import styled, { css } from "styled-components";
-
+//------------------------------------------------------------------
 import {
     BTN_STYLE,
     ERR_TEXT_STYLE,
     INPUT_STYLE,
     ERR_INPUT_STYLE,
 } from "../utils/ClassName";
-
+//------------------------------------------------------------------
 import Container from "../utils/Container";
 import MainLogo from "../utils/MainLogo";
+import Form from "../utils/Form";
 //------------------------------------------------------------------
 import { useForm } from "react-hook-form";
 //------------------------------------------------------------------
 import { useDispatch } from "react-redux";
 import { loginUser } from "../_action/user_action";
 import { useState } from "react";
-import Form from "../utils/Form";
+import { withRouter } from "react-router-dom";
 //------------------------------------------------------------------
 
 const Input = styled.input`
@@ -67,7 +68,7 @@ const PASSWORD_ERR = "비밀번호가 옳지 않습니다.";
 
 //------------------------------------------------------------------
 
-export default function LoginPage(url) {
+function LoginPage(url) {
     const dispatch = useDispatch();
 
     const [validation, setValidation] = useState();
@@ -135,3 +136,4 @@ export default function LoginPage(url) {
         </Container>
     );
 }
+export default withRouter(LoginPage);
