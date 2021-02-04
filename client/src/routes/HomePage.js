@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
+//-------------------------------------------------------------
 import { Link } from "react-router-dom";
-import axios from "axios";
-import styled from "styled-components";
+//-------------------------------------------------------------
+import styled, { css } from "styled-components";
+//-------------------------------------------------------------
 import Container from "../utils/Container";
 import { BTN_STYLE } from "../utils/ClassName";
 import MainLogo from "../utils/MainLogo";
+//-------------------------------------------------------------
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../_action/user_action";
+//-------------------------------------------------------------
 
 const Header = styled.header`
     position: sticky;
     top: 0;
 
     width: 100%;
+    height: 4.5rem;
 
     display: flex;
     flex-direction: row;
@@ -53,6 +58,87 @@ const Button = styled.button`
     }
 `;
 
+const ProfileBtn = styled.button`
+    transition: all ease-out 0.15s;
+
+    font-weight: 500;
+
+    width: auto;
+    height: 50px;
+
+    padding: 0 1rem;
+    margin-right: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: whitesmoke;
+
+    &:hover {
+        border: gray 1.5px solid;
+    }
+
+    &:active,
+    &:focus {
+        outline: none;
+        /* 클릭시 남는 것들 완전히 제거 */
+    }
+`;
+
+const NavBar = styled.div`
+    position: fixed;
+    top: 4.5rem;
+    right: 0;
+
+    width: 7rem;
+    height: fit-content;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    background: whitesmoke;
+
+    display: none;
+
+    ${(props) =>
+        props.isClicked &&
+        css`
+            display: block;
+        `}
+`;
+
+const NavBtn = styled.button`
+    transition: all 0.1s ease-out;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: inherit;
+    height: 3rem;
+    padding: 0.25rem 1rem;
+    margin-right: 0.5rem;
+
+    &:active,
+    &:focus {
+        outline: none;
+        /* 클릭시 남는 것들 완전히 제거 */
+    }
+
+    & + & {
+        border-top: 1.5px solid gray;
+    }
+    &:hover {
+        background: black;
+        color: whitesmoke;
+    }
+    &:last-child {
+        border-radius: 0 0 0.5rem 0.5rem;
+    }
+`;
+
 const ListContainer = styled.ul`
     width: 90%;
 
@@ -81,36 +167,19 @@ const ListBox = styled.li`
     border: 0.5px solid rgba(255, 255, 255, 0.5);
 `;
 
-const Profile = styled.div`
-    transition: all ease-out 0.1s;
-
-    width: auto;
-    height: 50px;
-
-    padding: 0 1rem;
-    margin-right: 0.5rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: whitesmoke;
-
-    &:hover {
-        color: white;
-        font-weight: 500;
-
-        background: black;
-        border: gray 1px solid;
-    }
-`;
-
 const BOX_STYLE = "rounded-full shadow-sm border hover:shadow-md";
 // const BTN_STYLE = "focus:ring-2 focus:ring-opacity-50";
 
-export default function LandingPage(url) {
+//-------------------------------------------------------------
+
+export default function LandingPage() {
     const dispatch = useDispatch();
     const [nickName, setNickName] = useState("");
+    const [display, setDisplay] = useState(false);
+
+    const onClick = (arg) => {
+        setDisplay(!arg);
+    };
 
     const { loginSuccess } = useSelector((state) => ({
         loginSuccess: state.userReducer.loginSuccess,
@@ -118,6 +187,7 @@ export default function LandingPage(url) {
 
     const handleLogOut = () => {
         dispatch(logoutUser);
+
         window.location.reload();
     };
 
@@ -145,17 +215,23 @@ export default function LandingPage(url) {
 
                 {loginSuccess && (
                     <>
-                        <Link to="/">
-                            <Button
-                                className={`${BTN_STYLE} focus:ring-gray-400 `}
-                                onClick={handleLogOut}
-                            >
-                                logout
-                            </Button>
-                        </Link>
-                        <Link to="/profile">
-                            <Profile className={BOX_STYLE}>{nickName}</Profile>
-                        </Link>
+                        <ProfileBtn
+                            className={BOX_STYLE}
+                            onClick={() => onClick(display)}
+                        >
+                            {nickName}
+                        </ProfileBtn>
+                        <NavBar isClicked={display} className={"shadow-md"}>
+                            <NavBtn onClick={handleLogOut}>
+                                <Link to="/">logout</Link>
+                            </NavBtn>
+                            <NavBtn>
+                                <Link to="/accout">account</Link>
+                            </NavBtn>
+                            <NavBtn>
+                                <Link to="/settings">settings</Link>
+                            </NavBtn>
+                        </NavBar>
                     </>
                 )}
                 {!loginSuccess && (
