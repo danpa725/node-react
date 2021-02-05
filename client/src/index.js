@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
-import App from "./App";
 import "./index.css";
+import App from "./components/App";
 
 //! 리덕스 & 미들웨어 설정
 import { Provider } from "react-redux";

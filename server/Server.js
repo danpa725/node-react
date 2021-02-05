@@ -48,7 +48,7 @@ app.post("/api/users/register", (req, res) => {
             return res.json({
                 registerSuccess: false,
                 message:
-                    "입력하신 이메일은 이미 사용중입니다. 다른 이메일을 입력해주세요.",
+                    "입력하신 이메일은 이미 사용중입니다. 다른 이메일을 이용해주세요.",
                 err,
             });
         else {
@@ -153,6 +153,11 @@ app.get("/api/users/logout", authUser, (req, res) => {
             });
         }
     );
+});
+
+app.get("/api/users/update", authUser, (req, res) => {
+    const { name, image } = req;
+    User.findOneAndUpdate();
 });
 
 const PORT = 5000;

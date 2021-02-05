@@ -67,7 +67,7 @@ function NavBar({ display, handleLogOut }) {
                 <Logout />
             </NavBtn>
             <NavBtn>
-                <Link to="/accout">account</Link>
+                <Link to="/account">account</Link>
                 <UserCircle />
             </NavBtn>
             <NavBtn>

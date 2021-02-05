@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 //------------------------------------------------------------------
 import { useDispatch } from "react-redux";
 import { loginUser, registerUser } from "../_action/user_action";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { withRouter } from "react-router-dom";
 //------------------------------------------------------------------
 
@@ -72,7 +72,11 @@ function RegisterPage(url) {
     const [passwordValidation, setPasswordValidation] = useState(true);
     const [err, setErr] = useState("");
 
-    const { register, handleSubmit, errors } = useForm();
+    const { register, handleSubmit, errors, watch } = useForm();
+
+    let passwordLength = watch("password", "").length;
+    let retypePasswordLength = watch("retypePassword", "").length;
+    let nickNameLength = watch("nickName", "").length;
 
     const onSubmit = async (input) => {
         const { email, password, retypePassword, nickName } = input;
@@ -95,7 +99,6 @@ function RegisterPage(url) {
                     url.history.push("/");
             } else {
                 const { message } = registerResponse.payload;
-
                 setErr(message);
                 setEmailValidation(false);
             }
@@ -128,9 +131,15 @@ function RegisterPage(url) {
                     name="password"
                     type="password"
                     placeholder="password"
-                    ref={register({ required: true, maxLength: 15 })}
+                    ref={register({
+                        required: true,
+                        minLength: 5,
+                        maxLength: 15,
+                    })}
                     className={`${BTN_STYLE} ${
-                        errors.password || passwordValidation === false
+                        passwordLength < 5 ||
+                        errors.password ||
+                        passwordValidation === false
                             ? ERR_INPUT_STYLE
                             : INPUT_STYLE
                     }`}
@@ -139,16 +148,24 @@ function RegisterPage(url) {
                     name="retypePassword"
                     type="password"
                     placeholder="retype your password"
-                    ref={register({ required: true, maxLength: 15 })}
+                    ref={register({
+                        required: true,
+                        minLength: 5,
+                        maxLength: 15,
+                    })}
                     className={`${BTN_STYLE} ${
-                        errors.retypePassword || passwordValidation === false
+                        retypePasswordLength < 5 ||
+                        errors.retypePassword ||
+                        passwordValidation === false
                             ? ERR_INPUT_STYLE
                             : INPUT_STYLE
                     }`}
                 />
                 {/* errors.password state에 따른 조건부 렌더링. 비밀번호 미입력시 발동 */}
-                {errors.password && (
-                    <Err className={ERR_TEXT_STYLE}>password is required</Err>
+                {passwordLength < 5 && retypePasswordLength < 5 && (
+                    <Err className={ERR_TEXT_STYLE}>
+                        password minimum length is 5
+                    </Err>
                 )}
                 {!passwordValidation && (
                     <Err className={ERR_TEXT_STYLE}>password is not same</Err>
@@ -157,13 +174,22 @@ function RegisterPage(url) {
                     name="nickName"
                     type="text"
                     placeholder="nick name"
-                    ref={register({ required: true, maxLength: 15 })}
+                    ref={register({ required: true, maxLength: 10 })}
                     className={`${BTN_STYLE} ${
-                        errors.nickName === false
+                        nickNameLength >= 10 || errors.nickName === true
                             ? ERR_INPUT_STYLE
                             : INPUT_STYLE
                     }`}
                 />
+                {errors.nickName?.type === "required" && (
+                    <Err className={ERR_TEXT_STYLE}>nick name is required</Err>
+                )}
+                {nickNameLength >= 10 && (
+                    <Err className={ERR_TEXT_STYLE}>
+                        max nick name length is 10
+                    </Err>
+                )}
+
                 {/* 이메일 비밀번호 불일치시 메시지 출력 */}
                 {!emailValidation && (
                     <Err className={ERR_TEXT_STYLE}>{err}</Err>
