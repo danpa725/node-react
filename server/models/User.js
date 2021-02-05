@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 
 //! SCHEMA: 데이터를 DB에 넣기 전에 먼저 검사
 const USER_TOKEN = "USER_TOKEN";
+
 const userSchema = mongoose.Schema({
     name: {
         type: String,
@@ -73,8 +74,9 @@ userSchema.pre("save", function (next) {
 // 비밀번호 매칭 메서드
 userSchema.methods.comparePassword = function (inputPassword, cb) {
     const dbPassword = this.password;
-    //inputPassword 1234 <=> 암호화 비밀번호 매칭
-    //! bycrypt의 compare메서드 이용.
+    // inputPassword <=> 암호화 비밀번호 매칭
+    // bycrypt의 compare메서드 이용.
+
     bcrypt.compare(inputPassword, dbPassword, function (err, isMatch) {
         if (err) return cb(err);
         return cb(null, isMatch);

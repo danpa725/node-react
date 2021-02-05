@@ -35,34 +35,43 @@ app.get("/", (req, res) => {
     res.send("Open Server!");
 });
 
-app.get("/api/hellow", (req, res) => {
-    res.send("Hellow users!");
-});
-
-//user 등록--------------------------------------------------------------------------------------------------
+//!user 등록--------------------------------------------------------------------------------------------------
 
 app.post("/api/users/register", (req, res) => {
     //회원가입 필요 정보 client에서 가져오면 데이터 베이스에 대입
     //req.body에 JSON 형태로 데이터가 들어있음
     const user = new User(req.body);
+    const { email } = user;
 
-    //db에 저장 save()메서드
-    user.save((err, userInfo) => {
-        if (err)
+    User.findOne({ email }, (err, isEmailExists) => {
+        if (isEmailExists)
             return res.json({
                 registerSuccess: false,
-                message: "이메일과 비밀번호를 다시 확인해주세요.",
+                message:
+                    "입력하신 이메일은 이미 사용중입니다. 다른 이메일을 입력해주세요.",
                 err,
             });
-        // 저장 성공시 200 신호 받음
-        return res.status(200).json({
-            registerSuccess: true,
-            // userInfo,
-        });
+        else {
+            //db에 저장 save()메서드
+
+            user.save((err, userInfo) => {
+                if (err)
+                    return res.json({
+                        registerSuccess: false,
+                        message: "이메일과 비밀번호를 다시 확인해주세요.",
+                        err,
+                    });
+                // 저장 성공시 200 신호 받음
+                return res.status(200).json({
+                    registerSuccess: true,
+                    // userInfo,
+                });
+            });
+        }
     });
 });
 
-//user 로그인--------------------------------------------------------------------------------------------------
+//!user 로그인--------------------------------------------------------------------------------------------------
 
 app.post("/api/users/login", (req, res) => {
     const { email, password } = req.body;
@@ -105,7 +114,7 @@ app.post("/api/users/login", (req, res) => {
     });
 });
 
-//Auth 이용하기 로그인 사용자의 쿠키 속 jwt를 통해 user.id를 구함 -> 서버와 비교하여 특정 페이지를 진입 가능한지 설정-------
+//!Auth 이용하기 로그인 사용자의 쿠키 속 jwt를 통해 user.id를 구함 -> 서버와 비교하여 특정 페이지를 진입 가능한지 설정-------
 
 app.get("/api/users/auth", authUser, (req, res) => {
     //! authuser 는 콜백을 실행하기전에 시행하는 미들웨어...
@@ -125,7 +134,7 @@ app.get("/api/users/auth", authUser, (req, res) => {
     });
 });
 
-//쿠키 속 토큰을 통해 인증을 진행하기에 DB에 user 토큰만 지우면 로그아웃 상태로 복귀함.-----------------------
+//!user 로그아웃 쿠키 속 토큰을 통해 인증을 진행 => DB user 토큰만 지우면 로그아웃 상태로 복귀.--------------
 
 app.get("/api/users/logout", authUser, (req, res) => {
     User.findOneAndUpdate(
@@ -135,6 +144,7 @@ app.get("/api/users/logout", authUser, (req, res) => {
         {
             token: "",
         },
+
         (err, user) => {
             if (err) return res.json({ logoutSuccess: false, err });
 

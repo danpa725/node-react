@@ -68,35 +68,37 @@ const Err = styled.p`
 function RegisterPage(url) {
     const dispatch = useDispatch();
 
-    const [validation, setValidation] = useState();
+    const [emailValidation, setEmailValidation] = useState();
     const [passwordValidation, setPasswordValidation] = useState(true);
     const [err, setErr] = useState("");
 
     const { register, handleSubmit, errors } = useForm();
 
-    const onSubmit = (input) => {
+    const onSubmit = async (input) => {
         const { email, password, retypePassword, nickName } = input;
 
-        if (password !== retypePassword) {
-            setPasswordValidation(false);
-        } else {
+        if (password !== retypePassword) setPasswordValidation(false);
+        //!
+        else {
             setPasswordValidation(true);
 
             const clientInfo = { email, password, name: nickName };
 
-            dispatch(registerUser(clientInfo)).then((res) => {
-                if (res.payload.registerSuccess) {
-                    dispatch(loginUser(clientInfo)).then((res) => {
-                        if (res.payload.loginSuccess) url.history.push("/");
-                    });
-                } else if (!res.payload.registerSuccess) {
-                    const { message } = res.payload;
+            const registerResponse = await dispatch(registerUser(clientInfo));
 
-                    setErr(message);
+            if (registerResponse.payload.registerSuccess) {
+                const registerSuccessRespones = await dispatch(
+                    loginUser(clientInfo)
+                );
 
-                    setValidation(false);
-                }
-            });
+                registerSuccessRespones.payload.loginSuccess &&
+                    url.history.push("/");
+            } else {
+                const { message } = registerResponse.payload;
+
+                setErr(message);
+                setEmailValidation(false);
+            }
         }
     };
 
@@ -117,7 +119,9 @@ function RegisterPage(url) {
                     placeholder="email"
                     ref={register({ required: true })}
                     className={`${BTN_STYLE} ${
-                        validation === false ? ERR_INPUT_STYLE : INPUT_STYLE
+                        emailValidation === false
+                            ? ERR_INPUT_STYLE
+                            : INPUT_STYLE
                     }`}
                 />
                 <Input
@@ -155,13 +159,15 @@ function RegisterPage(url) {
                     placeholder="nick name"
                     ref={register({ required: true, maxLength: 15 })}
                     className={`${BTN_STYLE} ${
-                        errors.nickName || validation === false
+                        errors.nickName === false
                             ? ERR_INPUT_STYLE
                             : INPUT_STYLE
                     }`}
                 />
                 {/* 이메일 비밀번호 불일치시 메시지 출력 */}
-                {!validation && <Err className={ERR_TEXT_STYLE}>{err}</Err>}
+                {!emailValidation && (
+                    <Err className={ERR_TEXT_STYLE}>{err}</Err>
+                )}
 
                 <Input
                     isBtn={true}
@@ -173,4 +179,5 @@ function RegisterPage(url) {
         </Container>
     );
 }
+
 export default withRouter(RegisterPage);
