@@ -12,6 +12,7 @@ import NavBar from "../utils/NavBar";
 //-------------------------------------------------------------
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../_action/user_action";
+import { Login, UserAdd } from "../assets/iconComponents";
 //-------------------------------------------------------------
 
 const Header = styled.header`
@@ -38,11 +39,17 @@ const Header = styled.header`
 const Button = styled.button`
     transition: all 0.1s ease-in-out;
 
-    width: 90px;
+    width: 105px;
     padding: 0.25rem 1rem;
     margin-right: 0.5rem;
 
     flex: 1;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
 
     &:hover {
         color: #262626;
@@ -69,11 +76,12 @@ const ProfileBtn = styled.button`
     height: 50px;
 
     padding: 0 1rem;
-    margin-right: 0.5rem;
+    margin-right: 1rem;
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    flex-direction: row;
 
     background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
     color: white;
@@ -151,6 +159,7 @@ function LandingPage() {
                                 className={`${BTN_STYLE} focus:ring-gray-400 `}
                             >
                                 login
+                                <Login />
                             </Button>
                         </Link>
                         <Link to="/register">
@@ -159,6 +168,7 @@ function LandingPage() {
                                 className={`${BTN_STYLE} focus:ring-red-500`}
                             >
                                 sign in
+                                <UserAdd />
                             </Button>
                         </Link>
                     </>

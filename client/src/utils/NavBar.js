@@ -1,12 +1,13 @@
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
+import { Cog, Logout, UserCircle } from "../assets/iconComponents";
 
 const NavContainer = styled.div`
     position: fixed;
     top: 4.5rem;
     right: 0;
 
-    width: 7rem;
+    width: 8rem;
     height: fit-content;
 
     display: flex;
@@ -30,7 +31,8 @@ const NavBtn = styled.button`
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    flex-direction: row;
 
     width: inherit;
     height: 3rem;
@@ -62,12 +64,15 @@ function NavBar({ display, handleLogOut }) {
         <NavContainer isClicked={display} className={"shadow-md"}>
             <NavBtn onClick={handleLogOut}>
                 <Link to="/">logout</Link>
+                <Logout />
             </NavBtn>
             <NavBtn>
                 <Link to="/accout">account</Link>
+                <UserCircle />
             </NavBtn>
             <NavBtn>
                 <Link to="/settings">settings</Link>
+                <Cog />
             </NavBtn>
         </NavContainer>
     );
