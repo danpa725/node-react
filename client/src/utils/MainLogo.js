@@ -6,6 +6,13 @@ const MainLogo = styled.h1`
 
     margin-left: 0.5rem;
 
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     flex: ${(props) => props.isMainPage && "5"};
 `;
 

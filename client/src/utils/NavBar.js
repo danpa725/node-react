@@ -7,7 +7,7 @@ const NavContainer = styled.div`
     top: 4.5rem;
     right: 0;
 
-    width: 8rem;
+    width: 10rem;
     height: fit-content;
 
     display: flex;
@@ -41,6 +41,14 @@ const NavBtn = styled.button`
     margin-right: 0.5rem;
 
     background: transparent;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     &:active,
     &:focus {
         outline: none;

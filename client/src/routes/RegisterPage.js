@@ -15,49 +15,14 @@ import { useForm } from "react-hook-form";
 //------------------------------------------------------------------
 import { useDispatch } from "react-redux";
 import { loginUser, registerUser } from "../_action/user_action";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { withRouter } from "react-router-dom";
+import Input from "../utils/Input";
 //------------------------------------------------------------------
 
-const Input = styled.input`
-    transition: all ease-out 0.1s;
-
-    width: 250px;
-    height: 1.5rem;
-
-    margin: 0.75rem;
-
-    background: transparent;
-
-    border-bottom: 1.5px solid black;
-
-    &:active,
-    &:focus {
-        outline: none;
-        /* 클릭시 남는 것들 완전히 제거 */
-        border: none;
-        border-radius: 2.5px;
-    }
-
-    ${(props) =>
-        props.isBtn &&
-        css`
-            margin-top: 1rem;
-            height: 2rem;
-
-            background: black;
-
-            color: white;
-
-            border: none;
-            border-radius: 2.5px;
-        `}
-`;
-
 const Err = styled.p`
-    font-family: "Nanum Gothic Coding", monospace;
-    font-weight: 700;
-    font-size: 0.9em;
+    font-family: "Do Hyeon";
+    font-size: 1rem;
 
     width: 250px;
     text-align: center;
@@ -73,16 +38,17 @@ function RegisterPage(url) {
     const [err, setErr] = useState("");
 
     const { register, handleSubmit, errors, watch } = useForm();
+    // 인풋 상태를 조회하기 위해 react-hook-form 이용
 
     let passwordLength = watch("password", "").length;
     let retypePasswordLength = watch("retypePassword", "").length;
     let nickNameLength = watch("nickName", "").length;
+    // hook-form의 watch메서드로 인풋의 특정 부분의 값을 가져옴.
 
     const onSubmit = async (input) => {
         const { email, password, retypePassword, nickName } = input;
-
         if (password !== retypePassword) setPasswordValidation(false);
-        //!
+        //처음 입력 비밀번호와 재 입력 비밀번호 매칭.
         else {
             setPasswordValidation(true);
 

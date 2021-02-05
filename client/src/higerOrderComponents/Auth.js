@@ -21,7 +21,6 @@ export default function Auth(
             const fetchingData = async () => {
                 const { payload } = await dispatch(authUser());
                 //! 로그아웃 상태
-                console.log(payload, beforeLogInPage);
                 if (!payload.isAuth) {
                     if (!beforeLogInPage) url.history.push("/");
                 }
@@ -36,7 +35,6 @@ export default function Auth(
 
             fetchingData();
         }, []);
-
         return <SpecificComponent />;
     }
 

@@ -7,34 +7,14 @@ import { Link, withRouter } from "react-router-dom";
 import { BTN_STYLE } from "../utils/ClassName";
 //-------------------------------------------------------------
 import Container from "../utils/Container";
+import Header from "../utils/Header";
 import MainLogo from "../utils/MainLogo";
 import NavBar from "../utils/NavBar";
 //-------------------------------------------------------------
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../_action/user_action";
-import { Login, UserAdd } from "../assets/iconComponents";
+import { Login, UserAdd, ArrowDown } from "../assets/iconComponents";
 //-------------------------------------------------------------
-
-const Header = styled.header`
-    position: sticky;
-    top: 0;
-
-    width: 100%;
-    height: 4.5rem;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: right;
-
-    border-bottom: 1px solid #0d0d0d;
-
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-
-    z-index: 10;
-`;
 
 const Button = styled.button`
     transition: all 0.1s ease-in-out;
@@ -85,6 +65,7 @@ const ProfileBtn = styled.button`
 
     background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
     color: white;
+
     &:hover {
         border: 1px solid white;
     }
@@ -114,7 +95,6 @@ function LandingPage() {
 
     const handleLogOut = () => {
         dispatch(logoutUser);
-
         window.location.reload();
     };
 
@@ -143,12 +123,19 @@ function LandingPage() {
 
                 {login && (
                     <>
-                        <ProfileBtn
-                            className={PROFILE_STYLE}
-                            onClick={() => onClick(display)}
+                        <div
+                            className={
+                                "flex flex-row justify-between items-center mr-4"
+                            }
                         >
-                            {nickName}
-                        </ProfileBtn>
+                            <ProfileBtn
+                                className={`${PROFILE_STYLE} select-none`}
+                                onClick={() => onClick(display)}
+                            >
+                                {nickName}
+                            </ProfileBtn>
+                            <ArrowDown />
+                        </div>
                         <NavBar display={display} handleLogOut={handleLogOut} />
                     </>
                 )}

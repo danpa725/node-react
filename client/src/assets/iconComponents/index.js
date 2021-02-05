@@ -1,6 +1,10 @@
-export { default as Cog } from './Cog'
-export { default as Login } from './Login'
-export { default as Logout } from './Logout'
-export { default as MainLogo } from './MainLogo'
-export { default as UserAdd } from './UserAdd'
-export { default as UserCircle } from './UserCircle'
+export { default as Cog } from "./Cog";
+export { default as Login } from "./Login";
+export { default as Logout } from "./Logout";
+export { default as MainLogo } from "./MainLogo";
+export { default as UserAdd } from "./UserAdd";
+export { default as UserCircle } from "./UserCircle";
+export { default as ArrowDown } from "./ArrowDown";
+export { default as Image } from "./Image";
+export { default as Edit } from "./Edit";
+export { default as UserDemo } from "./UserDemo";
