@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../_action/user_action";
 import { useState } from "react";
 import { withRouter } from "react-router-dom";
+import Err from "../utils/Err";
 //------------------------------------------------------------------
 
 const Input = styled.input`
@@ -54,15 +55,6 @@ const Input = styled.input`
         `}
 `;
 
-const Err = styled.p`
-    font-family: "Nanum Gothic Coding", monospace;
-    font-weight: 700;
-    font-size: 0.9em;
-
-    width: 250px;
-    text-align: center;
-`;
-
 const EMAIL_ERR = "입력하신 이메일에 해당되는 계정이 존재하지 않습니다.";
 const PASSWORD_ERR = "비밀번호가 옳지 않습니다.";
 
@@ -80,16 +72,18 @@ function LoginPage(url) {
 
         const clientInfo = { email, password };
 
-        dispatch(loginUser(clientInfo)).then((res) => {
-            if (res.payload.loginSuccess) {
-                url.history.push("/");
-                //! react-router-dom에서 제공하는 url 기록임. -> push메서드로 메인 페이지로 이동.
-            } else if (!res.payload.loginSuccess) {
-                const { message } = res.payload;
-                setErr(message);
-                setValidation(false);
-            }
-        });
+        dispatchUserLogin(clientInfo);
+    };
+
+    const dispatchUserLogin = async (clientInfo) => {
+        const response = await dispatch(loginUser(clientInfo));
+        if (response.payload.loginSuccess) {
+            url.history.push("/");
+        } else {
+            const { message } = response.payload;
+            setErr(message);
+            setValidation(false);
+        }
     };
 
     return (

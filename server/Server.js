@@ -155,9 +155,29 @@ app.get("/api/users/logout", authUser, (req, res) => {
     );
 });
 
-app.get("/api/users/update", authUser, (req, res) => {
-    const { name, image } = req;
-    User.findOneAndUpdate();
+app.patch("/api/users/update", authUser, (req, res) => {
+    const { name, email } = req.body;
+    User.findOneAndUpdate(
+        {
+            email,
+        },
+        {
+            $set: {
+                name: name,
+            },
+        },
+        {
+            new: true,
+        },
+
+        (err, user) => {
+            if (err) return res.json({ updateSuccess: false, err });
+
+            return res.status(200).send({
+                updateSuccess: true,
+            });
+        }
+    );
 });
 
 const PORT = 5000;

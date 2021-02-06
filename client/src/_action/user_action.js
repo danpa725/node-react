@@ -1,10 +1,11 @@
 import axios from "axios";
-import { AUTH_USER, REGISTER_USER, TYPE_USER } from "./types";
+import { AUTH_USER, MODIFYING_USER, REGISTER_USER, TYPE_USER } from "./types";
 
 const LOGIN_URL = "/api/users/login";
 const REGISTER_URL = "/api/users/register";
 const LOGOUT_URL = "/api/users/logout";
 const AUTH_URL = "/api/users/auth";
+const MODIFYING_URL = "/api/users/update";
 
 export async function loginUser(dataToSend) {
     const request = await axios.post(LOGIN_URL, dataToSend);
@@ -38,6 +39,15 @@ export async function authUser() {
 
     return {
         type: AUTH_USER,
+        payload: request.data,
+    };
+}
+
+export async function modifyingUser(dataToSend) {
+    const request = await axios.patch(MODIFYING_URL, dataToSend);
+
+    return {
+        type: MODIFYING_USER,
         payload: request.data,
     };
 }

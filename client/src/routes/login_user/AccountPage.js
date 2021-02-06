@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 //--------------------------------------------------
 import { useEffect, useRef, useState } from "react";
 //--------------------------------------------------
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 //--------------------------------------------------
 import { Link, withRouter } from "react-router-dom";
 //--------------------------------------------------
@@ -17,8 +17,13 @@ import {
     ERR_INPUT_STYLE,
     ERR_TEXT_STYLE,
     INPUT_STYLE,
+    CONFIG_BTN_STYLE,
+    CONFIG_ERR_BTN_STYLE,
+    CONFIG_SAFE_BTN_STYLE,
+    CONFIG_SUCCESS_STYLE,
 } from "../../utils/ClassName";
 import Err from "../../utils/Err";
+import { modifyingUser } from "../../_action/user_action";
 //--------------------------------------------------
 
 const UserConfigContainer = styled.div`
@@ -103,20 +108,20 @@ const ConfigButton = styled.button`
     }
 `;
 
-const CONFIG_BTN_STYLE = "rounded shadow hover:shadow-lg";
-const CONFIG_SAFE_BTN_STYLE =
-    "hover:bg-green-600 focus:ring-2 focus:ring-green-300";
-const CONFIG_ERR_BTN_STYLE = "hover:bg-red-500 focus:ring-2 focus:ring-red-300";
 //--------------------------------------------------
 
 function AccountPage() {
+    const dispatch = useDispatch();
+
     const [display, setDisplay] = useState(false);
     const [userInfo, setUserInfo] = useState({});
+    const [update, setUpdate] = useState(0);
 
     const { userData = "" } = useSelector((state) => ({
         userData: state.userReducer.userData,
     }));
 
+    //! 페이지 렌더시 userData에서 name, email을 추출
     useEffect(() => {
         const setUserData = (userData) => {
             const Data = { name: userData.name, email: userData.email };
@@ -129,15 +134,30 @@ function AccountPage() {
 
     let nickNameLength = watch("nickName", "").length;
 
-    const toggleClass = (arg) => {
+    const handleUserInputChange = (arg) => {
         if (nickNameLength <= 10) {
             setDisplay(!arg);
+            setUpdate(0);
 
             //! 유저가 입력한 경우
             if (nickNameLength > 0) {
-                const nickName = { name: getValues("nickName") };
-                setUserInfo({ ...nickName, email: userData.email });
+                const newName = {
+                    name: getValues("nickName"),
+                    email: userData.email,
+                };
+
+                if (userInfo.name !== newName.name) {
+                    setUserInfo({ ...newName });
+                    updateUserInfo(newName);
+                }
             }
+        }
+    };
+
+    const updateUserInfo = async (newName) => {
+        const response = await dispatch(modifyingUser(newName));
+        if (response.payload.updateSuccess) {
+            setUpdate(1);
         }
     };
 
@@ -164,7 +184,7 @@ function AccountPage() {
                                     ? CONFIG_SAFE_BTN_STYLE
                                     : CONFIG_ERR_BTN_STYLE
                             }   `}
-                            onClick={() => toggleClass(display)}
+                            onClick={() => handleUserInputChange(display)}
                         >
                             {!display && "변경"}
                             {display && nickNameLength <= 10 && "확정"}
@@ -200,6 +220,14 @@ function AccountPage() {
                                 className={ERR_TEXT_STYLE}
                             >
                                 max nick name length is 10
+                            </Err>
+                        )}
+                        {update === 1 && (
+                            <Err
+                                isAccountPage={true}
+                                className={CONFIG_SUCCESS_STYLE}
+                            >
+                                Update Success 😎
                             </Err>
                         )}
                     </List>
