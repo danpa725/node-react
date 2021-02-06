@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 //--------------------------------------------------
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 //--------------------------------------------------
 import { useSelector } from "react-redux";
 //--------------------------------------------------
@@ -12,7 +12,13 @@ import MainLogo from "../../utils/MainLogo";
 import { UserDemo } from "../../assets/iconComponents";
 import { useForm } from "react-hook-form";
 import Input from "../../utils/Input";
-import { BTN_STYLE, INPUT_STYLE } from "../../utils/ClassName";
+import {
+    BTN_STYLE,
+    ERR_INPUT_STYLE,
+    ERR_TEXT_STYLE,
+    INPUT_STYLE,
+} from "../../utils/ClassName";
+import Err from "../../utils/Err";
 //--------------------------------------------------
 
 const UserConfigContainer = styled.div`
@@ -97,21 +103,42 @@ const ConfigButton = styled.button`
     }
 `;
 
-const CONFIG_BTN_STYLE =
-    "rounded shadow hover:shadow-lg hover:bg-green-600 focus:ring-2 focus:ring-green-300";
+const CONFIG_BTN_STYLE = "rounded shadow hover:shadow-lg";
+const CONFIG_SAFE_BTN_STYLE =
+    "hover:bg-green-600 focus:ring-2 focus:ring-green-300";
+const CONFIG_ERR_BTN_STYLE = "hover:bg-red-500 focus:ring-2 focus:ring-red-300";
 //--------------------------------------------------
 
 function AccountPage() {
+    const [display, setDisplay] = useState(false);
+    const [userInfo, setUserInfo] = useState({});
+
     const { userData = "" } = useSelector((state) => ({
         userData: state.userReducer.userData,
     }));
-    const { name, email } = userData;
 
-    const { register, handleSubmit, errors, watch } = useForm();
-    const [display, setDisplay] = useState(false);
+    useEffect(() => {
+        const setUserData = (userData) => {
+            const Data = { name: userData.name, email: userData.email };
+            setUserInfo({ ...Data });
+        };
+        setUserData(userData);
+    }, [userData]);
+
+    const { register, watch, getValues } = useForm();
+
+    let nickNameLength = watch("nickName", "").length;
 
     const toggleClass = (arg) => {
-        setDisplay(!arg);
+        if (nickNameLength <= 10) {
+            setDisplay(!arg);
+
+            //! 유저가 입력한 경우
+            if (nickNameLength > 0) {
+                const nickName = { name: getValues("nickName") };
+                setUserInfo({ ...nickName, email: userData.email });
+            }
+        }
     };
 
     return (
@@ -132,27 +159,53 @@ function AccountPage() {
                     <List isTitle={true}>
                         닉네임
                         <ConfigButton
-                            className={CONFIG_BTN_STYLE}
+                            className={`${CONFIG_BTN_STYLE} ${
+                                nickNameLength <= 10
+                                    ? CONFIG_SAFE_BTN_STYLE
+                                    : CONFIG_ERR_BTN_STYLE
+                            }   `}
                             onClick={() => toggleClass(display)}
                         >
-                            {!display ? "변경" : "확정"}
+                            {!display && "변경"}
+                            {display && nickNameLength <= 10 && "확정"}
+                            {display && nickNameLength > 10 && "초과"}
                         </ConfigButton>
                     </List>
                     <List isConfig={true} display={display}>
-                        {name}
+                        {userInfo?.name}
                     </List>
+
                     <List display={!display}>
                         <Input
                             isAccountPage={true}
                             name="nickName"
                             type="text"
+                            defaultValue={userInfo.name}
                             placeholder="New name"
-                            ref={register({ required: true, maxLength: 10 })}
-                            className={`${BTN_STYLE} ${INPUT_STYLE}`}
+                            ref={register({
+                                required: true,
+                                minLength: 0,
+                                maxLength: 10,
+                            })}
+                            className={`${BTN_STYLE} ${
+                                nickNameLength <= 10
+                                    ? INPUT_STYLE
+                                    : ERR_INPUT_STYLE
+                            }`}
                         />
+
+                        {nickNameLength > 10 && (
+                            <Err
+                                isAccountPage={true}
+                                className={ERR_TEXT_STYLE}
+                            >
+                                max nick name length is 10
+                            </Err>
+                        )}
                     </List>
+
                     <List isTitle={true}>이메일</List>
-                    <List isConfig={true}>{email}</List>
+                    <List isConfig={true}>{userInfo?.email}</List>
                 </UserConfigLists>
             </UserConfigContainer>
         </Container>

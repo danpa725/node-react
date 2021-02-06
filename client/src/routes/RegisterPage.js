@@ -18,16 +18,7 @@ import { loginUser, registerUser } from "../_action/user_action";
 import { useState } from "react";
 import { withRouter } from "react-router-dom";
 import Input from "../utils/Input";
-//------------------------------------------------------------------
-
-const Err = styled.p`
-    font-family: "Do Hyeon";
-    font-size: 1rem;
-
-    width: 250px;
-    text-align: center;
-`;
-
+import Err from "../utils/Err";
 //------------------------------------------------------------------
 
 function RegisterPage(url) {
